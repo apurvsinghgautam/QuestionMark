@@ -14,4 +14,4 @@ def profile():
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=4444)
+    app.run(host='localhost', port=4444, debug=True)
