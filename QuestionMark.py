@@ -82,7 +82,7 @@ def login():
         if result > 0:
             # Get stored hash
             data = cur.fetchone()
-            password = data['password']
+            password = data['Upass']
             pro_id = data['ProID']
 
             # Compare Passwords
@@ -104,6 +104,27 @@ def login():
             return render_template('auth/login.html', error=error)
 
     return render_template('auth/login.html')
+
+
+# Check if user logged in
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Unauthorized, Please login', 'danger')
+            return redirect(url_for('login'))
+    return wrap
+
+
+# Logout
+@app.route('/logout')
+@is_logged_in
+def logout():
+    session.clear()
+    flash('You are now logged out', 'success')
+    return redirect(url_for('login'))
 
 
 # Answer Form Class
