@@ -82,7 +82,7 @@ def login():
         if result > 0:
             # Get stored hash
             data = cur.fetchone()
-            password = data['Upass']
+            password = data['password']
             pro_id = data['ProID']
 
             # Compare Passwords
@@ -125,6 +125,37 @@ def logout():
     session.clear()
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
+
+
+# Question Form Class
+class QuestionForm(Form):
+    quesbody = TextAreaField('QuesBody', [validators.Length(min=10)])
+
+
+# Add Question
+@app.route('/add_question', methods=['GET', 'POST'])
+def add_question():
+    form = QuestionForm(request.form)
+    if request.method == 'POST' and form.validate():
+        quesbody = form.quesbody.data
+
+        # Create Cursor
+        cur = mysql.connection.cursor()
+
+        # Execute
+        cur.execute("INSERT INTO Questions(Ques) VALUES(%s)", (quesbody))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+
+        flash('Question Posted', 'success')
+
+        return redirect(url_for('dashboard'))
+
+    return render_template('add_question.html', form=form)
 
 
 # Answer Form Class
