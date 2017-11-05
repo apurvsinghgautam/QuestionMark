@@ -2,7 +2,7 @@
 
 {% block body %}
   <h1>Dashboard <small> Welcome {{session.username}}</small></h1>
-  <a class="btn btn-success" href="/add_article"> Add Article</a>
+  <a class="btn btn-success" href="/add_question"> Add Question</a>
   <hr>
   <table class="table table-striped">
     <tr>
@@ -13,12 +13,12 @@
       <th></th>
       <th></th>
     </tr>
-    {% for article in articles %}
+    {% for qna in quesans %}
       <tr>
-        <td>{{article.id}}</td>
-        <td>{{article.title}}</td>
-        <td>{{article.author}}</td>
-        <td>{{article.create_date}}</td>
+        <td>{{qna.id}}</td>
+        <td>{{qna.title}}</td>
+        <td>{{qna.author}}</td>
+        <td>{{qna.create_date}}</td>
         <td><a href="edit_article/{{article.id}}" class="btn btn-default pull-right">Edit</a></td>
         <td>
           <form action="{{url_for('delete_article', id=article.id)}}" method="post">

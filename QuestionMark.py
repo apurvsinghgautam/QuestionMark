@@ -106,6 +106,58 @@ def login():
     return render_template('auth/login.html')
 
 
+# Check if user logged in
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Unauthorized, Please login', 'danger')
+            return redirect(url_for('login'))
+    return wrap
+
+
+# Logout
+@app.route('/logout')
+@is_logged_in
+def logout():
+    session.clear()
+    flash('You are now logged out', 'success')
+    return redirect(url_for('login'))
+
+
+# Question Form Class
+class QuestionForm(Form):
+    quesbody = TextAreaField('QuesBody', [validators.Length(min=10)])
+
+
+# Add Question
+@app.route('/add_question', methods=['GET', 'POST'])
+def add_question():
+    form = QuestionForm(request.form)
+    if request.method == 'POST' and form.validate():
+        quesbody = form.quesbody.data
+
+        # Create Cursor
+        cur = mysql.connection.cursor()
+
+        # Execute
+        cur.execute("INSERT INTO Questions(Ques) VALUES(%s)", (quesbody))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        # Close connection
+        cur.close()
+
+        flash('Question Posted', 'success')
+
+        return redirect(url_for('dashboard'))
+
+    return render_template('add_question.html', form=form)
+
+
 # Answer Form Class
 class AnswerForm(Form):
     body = TextAreaField('AnsBody', [validators.Length(min=30)])
@@ -135,6 +187,27 @@ def add_answer():
         return redirect(url_for('dashboard'))
 
     return render_template('add_answer.html', form=form)
+
+
+# Dashboard
+@app.route('/dashboard')
+@is_logged_in
+def dashboard():
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Get articles
+    result = cur.execute("")
+
+    quesans = cur.fetchall()
+
+    if result > 0:
+        return render_template('dashboard.html', quesans=quesans)
+    else:
+        msg = 'No Articles Found'
+        return render_template('dashboard.html', msg=msg)
+    # Close connection
+    cur.close()
 
 
 if __name__ == '__main__':
