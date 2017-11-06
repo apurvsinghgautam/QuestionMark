@@ -1,6 +1,4 @@
 
-<!DOCTYPE html>
-<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,26 +16,7 @@
 
   <body>
 
- 
-    <nav class="navbar navbar-default">
-      <div class="container">
-        <div class="navbar-header">
-         
-     		 <a class="navbar-brand" href="#">QuestionMark</a>
-    
-        </div>
-        <div id="navbar" class="collapse navbar-collapse" class="pull-right">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="index.html">Home</a></li>
-            <li><a href="members.html">Members</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="groups.html">Groups</a></li>
-            <li><a href="photos.html">Photos</a></li>
-            <li><a href="profile.html">Profile</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+
 
     <section>
       <div class="container">
@@ -57,40 +36,35 @@
                 </form>
               </div>
             </div>
+            {%  for question in questions %}
             <div class="panel panel-default post">
               <div class="panel-body">
                  <div class="row">
-                   <div class="col-sm-2">
-                     
-                   </div>
+
                    <div class="col-sm-10">
 	                   <div class="question">
-	                   	<p>How many sides does a square have?</p>
+	                   	<p>{{ question }}</p>
 	                   </div>
-	                   <div class="caption"><a href="#">Rohan Nevrikar</a> answered this</div><br>
+                       {% for answer in answers %}
+	                   <div class="caption"><a href="#">Rohan</a> answered this</div><br>
 	                   <div class="answer">
-	                   	      <p>Hey I was wondering if you wanted to go check out the football game later. I heard they are supposed to be really good!</p>
+	                   	      <p>{{ answer }}</p>
 	                   </div>
-	                  
-						<button type="button" class="btn btn-primary">Upvote <span class="badge">7</span></button>	                  	
-	                 
+	                  <form action="" method="POST">
+						<button type="submit" class="btn btn-primary"> <span class="badge">{{ upvote }}</span></button>
+	                 </form>
 	                   
                    </div>
-                     
+                           {% endfor %}
 
-                     
+
+
                  </div>
               </div>
             </div>
+              {% endfor %}
             </div>
-            </div>
-            </div>
-            </section>
+        </div>
+      </div>
+    </section>
                 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="static/bootstrap.js"></script>
-  </body>
-</html>

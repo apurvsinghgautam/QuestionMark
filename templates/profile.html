@@ -1,6 +1,5 @@
+{% extends 'layout.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,47 +19,22 @@
   <body>
 
 
-    <nav class="navbar navbar-default">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="index.html">Home</a></li>
-            <li><a href="members.html">Members</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="groups.html">Groups</a></li>
-            <li><a href="photos.html">Photos</a></li>
-            <li><a href="profile.html">Profile</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
 
     <section>
       <div class="container">
         <div class="row">
           <div class="col-md-8">
             <div class="profile">
-              <h1 class="page-header">Douglas Walter</h1>
+              <h1 class="page-header"></h1>
               <div class="row">
                 <div class="col-md-4">
                   <img src="img/user.png" class="img-thumbnail" alt="">
                 </div>
                 <div class="col-md-8">
                   <ul>
-                    <li><strong>Name:</strong>Doug Walter</li>
-                    <li><strong>Email:</strong>doug@gmail.com</li>
-                    <li><strong>City:</strong>Boston</li>
-                    <li><strong>State:</strong>Massachusetts</li>
-                    <li><strong>Gender:</strong>Male</li>
-                    <li><strong>DOB:</strong>September 16th</li>
+                    <li><strong>Name:</strong>{{ name }}</li>
+{#                    <li><strong>Email:</strong>{{ session['email'] }}</li>#}
+
                   </ul>
                 </div>
               </div><br><br>

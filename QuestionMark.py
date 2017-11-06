@@ -18,18 +18,34 @@ mysql = MySQL(app)
 
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+@app.route('/<aid>')
+def index(aid=None):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT Ques FROM questions")
+    questions = cur.fetchall()
+    cur.execute("SELECT Uname FROM answers,userprofile WHERE answers.ProID=userprofile.ProID;")
+    names = cur.fetchall()
+    cur.execute("SELECT Ans FROM answers,userprofile WHERE answers.ProID=userprofile.ProID;")
+    answers = cur.fetchall()
+    cur.execute("SELECT COUNT(*) FROM upvotes WHERE AID=%s",aid)
+    upvote = cur.fetchall()
+    #cur.execute("INSERT INTO (AID) VALUES %s", aid)
+
+    return render_template('index.html',upvote=str(upvote),questions=questions,names=names,answers=answers)
 
 
 @app.route('/profile')
 def profile():
-    return render_template('profile.html')
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT Uname FROM userprofile WHERE Email=%s",[session['email']])
+    name = cur.fetchone()
+
+    return render_template('profile.html',name=name)
 
 
 # Register Form Class
 class RegisterForm(Form):
-    username = StringField('Username', [validators.Length(min=4, max=50)])
+    name = StringField('Name', [validators.Length(min=4, max=50)])
     email = StringField('Email', [validators.Length(min=6, max=100)])
     password = PasswordField('Password', [
         validators.DataRequired(),
@@ -44,14 +60,14 @@ def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
         email = form.email.data
-        username = form.username.data
+        name = form.name.data
         password = sha256_crypt.encrypt(str(form.password.data))
 
         # Create cursor
         cur = mysql.connection.cursor()
 
         # Execute query
-        cur.execute("INSERT INTO UserProfile(Email, Uname, Upass) VALUES(%s, %s, %s)", (email, username, password))
+        cur.execute("INSERT INTO UserProfile(Email, Uname, Upass) VALUES(%s, %s, %s)", (email, name, password))
 
         # Commit to DB
         mysql.connection.commit()
@@ -60,7 +76,6 @@ def register():
         cur.close()
 
         flash('You are now registered and can log in', 'success')
-
         return redirect(url_for('login'))
     return render_template('auth/register.html', form=form)
 
@@ -70,27 +85,26 @@ def register():
 def login():
     if request.method == 'POST':
         # Get Form Fields
-        username = request.form['username']
+        email = request.form['email']
         password_candidate = request.form['password']
-
         # Create cursor
         cur = mysql.connection.cursor()
 
         # Get user by username
-        result = cur.execute("SELECT * FROM UserProfile WHERE Uname = %s", [username])
+        result = cur.execute("SELECT * FROM UserProfile WHERE Email = %s", [email])
 
         if result > 0:
             # Get stored hash
             data = cur.fetchone()
-            password = data['password']
+            password = data['Upass']
             pro_id = data['ProID']
 
             # Compare Passwords
             if sha256_crypt.verify(password_candidate, password):
                 # Passed
                 session['logged_in'] = True
-                session['username'] = username
                 session['pro_id'] = pro_id
+                session['email'] = email
 
                 flash('You are now logged in', 'success')
                 return redirect(url_for('profile'))
@@ -100,7 +114,7 @@ def login():
             # Close connection
             cur.close()
         else:
-            error = 'Username not found'
+            error = 'User not found'
             return render_template('auth/login.html', error=error)
 
     return render_template('auth/login.html')
@@ -208,6 +222,18 @@ def dashboard():
         return render_template('dashboard.html', msg=msg)
     # Close connection
     cur.close()
+
+
+@app.route('/setsession/<name>')
+def setsession(name):
+    session['name'] = name
+    return redirect('getsession')
+
+
+app.route('/getsession')
+def getsession():
+    name = session['name']
+    return str(name)
 
 
 if __name__ == '__main__':
