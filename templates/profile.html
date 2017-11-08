@@ -1,12 +1,12 @@
 {% extends 'layout.html' %}
 {% block body %}
-
+{% for name in names %}
     <section>
       <div class="container">
         <div class="row">
           <div class="col-md-8">
             <div class="profile">
-              <h1 class="page-header">{{ names['Uname']}}</h1>
+              <h1 class="page-header">{{ name.Uname}}</h1>
               <div class="row">
                 <div class="col-md-4">
                   <img src="img/user.png" class="img-thumbnail" alt="">
@@ -14,8 +14,8 @@
                 <div class="col-md-8">
                   <ul>
 
-                    <li><strong>Name:</strong>{{ names['Uname'] }}</li>
-                    <li><strong>Email:</strong>{{ session['email'] }}</li>
+                    <li><strong>Name:</strong>{{ name.Uname }}</li>
+                    <li><strong>Email:</strong>{{ name.Email }}</li>
                   </ul>
                 </div>
               </div><br><br>
@@ -49,6 +49,6 @@
  </div>
 
     </section>
-
+{% endfor %}
 
 {% endblock %}

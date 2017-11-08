@@ -19,16 +19,19 @@
 	                   <div class="question">
 	                   	<p>{{ question.Ques }}</p>
 	                   </div>
+
                        {% for answername in ansname %}
-	                   <div class="caption"><a href="#">{{ answername.Uname }}</a> answered this</div><br>
+	                   <div class="caption"><a href="{{ url_for('otherUser',id= answername.ProID) }}">{{ answername.Uname }}</a> answered this</div><br>
 	                   <div class="answer">
 	                   	      <p>{{ answername.Ans }}</p>
 	                   </div>
+                           {% for u in upvote %}
                            <form action="">
-                                <button type="button" class="btn btn-primary">Upvote{{ upvote['cnt'] }}</button>
+                                <button type="button" class="btn btn-primary">Upvote{{ upvote }}</button>
                                 <input type="hidden" name="answerID" value="{{ answername.AID }}">
 
                            </form>
+                               {% endfor %}
 
                    </div>
 

@@ -124,7 +124,7 @@ def logout():
 @is_logged_in
 def profile():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT Uname FROM userprofile WHERE Email=%s", [session['email']])
+    cur.execute("SELECT * FROM userprofile WHERE Email=%s", [session['email']])
     names = cur.fetchone()
     return render_template('profile.html', names=names)
 
@@ -200,29 +200,26 @@ def dashboard():
     cur = mysql.connection.cursor()
     cur.execute("SELECT Ques FROM questions")
     questions = cur.fetchall()
-    cur.execute("SELECT Uname,Ans,AID FROM answers,userprofile WHERE answers.ProID=userprofile.ProID")
+    cur.execute("SELECT * FROM answers,userprofile WHERE answers.ProID=userprofile.ProID")
     ansname = cur.fetchall()
     # cur.execute("SELECT Ans FROM answers,userprofile WHERE answers.ProID=userprofile.ProID")
     # answers = cur.fetchall()
-    cur.execute("SELECT COUNT(*) as cnt FROM upvotes GROUP BY AID",request['answerID'])
-    upvote = cur.fetchone()
+    cur.execute("SELECT COUNT(*) as cnt FROM upvotes GROUP BY AID")
+    upvote = cur.fetchall()
     # cur.execute("INSERT INTO (AID) VALUES %s", aid)
-    print(upvote['cnt'])
-    cur.execute("INSERT INTO upvotes VALUES %s",request['answerID'])
+    print(upvote)
+    #cur.execute("INSERT INTO upvotes VALUES %s"
 
     return render_template('dashboard.html', upvote=upvote, questions=questions, ansname=ansname)
 
 
-@app.route('/setsession/<name>')
-def setsession(name):
-    session['name'] = name
-    return redirect('getsession')
+@app.route('/otherUser/<id>')
+def otherUser(id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM userprofile where ProID=%s",id)
+    userinfo = cur.fetchall()
+    return render_template('profile.html',names=userinfo)
 
-
-app.route('/getsession')
-def getsession():
-    name = session['name']
-    return str(name)
 
 
 if __name__ == '__main__':
