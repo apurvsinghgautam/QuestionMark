@@ -1,26 +1,7 @@
 {% extends 'layout.html' %}
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Question Mark</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-        <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
-
-    <link href="{{ url_for('static', filename='font-awesome.css') }}" rel="stylesheet">
-  </head>
-
-  <body>
-
-
 {% block body %}
 
-    {#<section>
+    <section>
       <div class="container">
         <div class="row">
           <div class="col-md-8">
@@ -30,17 +11,16 @@
                 <div class="col-md-4">
                   <img src="img/user.png" class="img-thumbnail" alt="">
                 </div>
-                <div class="col-md-8">#}
+                <div class="col-md-8">
                   <ul>
-                      {% for name in names %}
-                    <li><strong>Name:</strong>{{ names.Uname }}</li>
+
+                    <li><strong>Name:</strong>{{ names['Uname'] }}</li>
                     <li><strong>Email:</strong>{{ session['email'] }}</li>
-                         {% endfor %}
                   </ul>
-               {# </div>
+                </div>
               </div><br><br>
             </div>
-          </div>#}
+          </div>
 
           <div class="col-md-4">
             <div class="panel panel-default friends">
