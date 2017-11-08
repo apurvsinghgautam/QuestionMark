@@ -18,33 +18,8 @@ mysql = MySQL(app)
 
 
 @app.route('/')
-@app.route('/<aid>')
-def index(aid=None):
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT Ques FROM questions")
-    questions = cur.fetchall()
-    cur.execute("SELECT Uname,Ans FROM answers,userprofile WHERE answers.ProID=userprofile.ProID")
-    ansname = cur.fetchall()
-   # cur.execute("SELECT Ans FROM answers,userprofile WHERE answers.ProID=userprofile.ProID")
-    #answers = cur.fetchall()
-    cur.execute("SELECT COUNT(*) as cnt FROM upvotes WHERE AID=%s",[aid])
-    upvote = cur.fetchall()
-    #cur.execute("INSERT INTO (AID) VALUES %s", aid)
-    print (upvote)
-    return render_template('index.html',upvote=str(upvote),questions=questions,ansname=ansname)
-
-
-@app.route('/profile')
-def profile():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT Uname FROM userprofile WHERE Email=%s",[session['email']])
-    name = cur.fetchone()
-    email = session['email']
-    newName = name['Uname']
-    print (newName)
-    print (email)
-
-    return render_template('profile.html',name=newName)
+def index():
+    return render_template('members.html')
 
 
 # Register Form Class
@@ -145,6 +120,15 @@ def logout():
     return redirect(url_for('login'))
 
 
+@app.route('/profile')
+@is_logged_in
+def profile():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT Uname FROM userprofile WHERE Email=%s", [session['email']])
+    names = cur.fetchone()
+    return render_template('profile.html', names=names)
+
+
 # Question Form Class
 class QuestionForm(Form):
     quesbody = TextAreaField('QuesBody', [validators.Length(min=10)])
@@ -152,6 +136,7 @@ class QuestionForm(Form):
 
 # Add Question
 @app.route('/add_question', methods=['GET', 'POST'])
+@is_logged_in
 def add_question():
     form = QuestionForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -183,6 +168,7 @@ class AnswerForm(Form):
 
 # Add Answer
 @app.route('/add_answer', methods=['GET', 'POST'])
+@is_logged_in
 def add_answer():
     form = AnswerForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -209,23 +195,21 @@ def add_answer():
 
 # Dashboard
 @app.route('/dashboard')
+@app.route('/<aid>')
 @is_logged_in
-def dashboard():
-    # Create cursor
+def dashboard(aid=None):
     cur = mysql.connection.cursor()
-
-    # Get articles
-    result = cur.execute("")
-
-    quesans = cur.fetchall()
-
-    if result > 0:
-        return render_template('dashboard.html', quesans=quesans)
-    else:
-        msg = 'No Articles Found'
-        return render_template('dashboard.html', msg=msg)
-    # Close connection
-    cur.close()
+    cur.execute("SELECT Ques FROM questions")
+    questions = cur.fetchall()
+    cur.execute("SELECT Uname,Ans FROM answers,userprofile WHERE answers.ProID=userprofile.ProID")
+    ansname = cur.fetchall()
+    # cur.execute("SELECT Ans FROM answers,userprofile WHERE answers.ProID=userprofile.ProID")
+    # answers = cur.fetchall()
+    cur.execute("SELECT COUNT(*) as cnt FROM upvotes WHERE AID=%s", [aid])
+    upvote = cur.fetchall()
+    # cur.execute("INSERT INTO (AID) VALUES %s", aid)
+    print(upvote)
+    return render_template('dashboard.html', upvote=str(upvote), questions=questions, ansname=ansname)
 
 
 @app.route('/setsession/<name>')

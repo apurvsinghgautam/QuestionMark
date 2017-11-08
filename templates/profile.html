@@ -18,9 +18,9 @@
   <body>
 
 
+{% block body %}
 
-
-    <section>
+    {#<section>
       <div class="container">
         <div class="row">
           <div class="col-md-8">
@@ -30,15 +30,17 @@
                 <div class="col-md-4">
                   <img src="img/user.png" class="img-thumbnail" alt="">
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-8">#}
                   <ul>
-                    <li><strong>Name:</strong>{{ name }}</li>
+                      {% for name in names %}
+                    <li><strong>Name:</strong>{{ names.Uname }}</li>
                     <li><strong>Email:</strong>{{ session['email'] }}</li>
+                         {% endfor %}
                   </ul>
-                </div>
+               {# </div>
               </div><br><br>
             </div>
-          </div>
+          </div>#}
 
           <div class="col-md-4">
             <div class="panel panel-default friends">
@@ -69,6 +71,4 @@
     </section>
 
 
-
-  </body>
-</html>
+{% endblock %}
