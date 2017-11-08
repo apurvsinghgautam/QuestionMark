@@ -195,21 +195,22 @@ def add_answer():
 
 # Dashboard
 @app.route('/dashboard')
-@app.route('/<aid>')
 @is_logged_in
-def dashboard(aid=None):
+def dashboard():
     cur = mysql.connection.cursor()
     cur.execute("SELECT Ques FROM questions")
     questions = cur.fetchall()
-    cur.execute("SELECT Uname,Ans FROM answers,userprofile WHERE answers.ProID=userprofile.ProID")
+    cur.execute("SELECT Uname,Ans,AID FROM answers,userprofile WHERE answers.ProID=userprofile.ProID")
     ansname = cur.fetchall()
     # cur.execute("SELECT Ans FROM answers,userprofile WHERE answers.ProID=userprofile.ProID")
     # answers = cur.fetchall()
-    cur.execute("SELECT COUNT(*) as cnt FROM upvotes WHERE AID=%s", [aid])
-    upvote = cur.fetchall()
+    cur.execute("SELECT COUNT(*) as cnt FROM upvotes GROUP BY AID",request['answerID'])
+    upvote = cur.fetchone()
     # cur.execute("INSERT INTO (AID) VALUES %s", aid)
-    print(upvote)
-    return render_template('dashboard.html', upvote=str(upvote), questions=questions, ansname=ansname)
+    print(upvote['cnt'])
+    cur.execute("INSERT INTO upvotes VALUES %s",request['answerID'])
+
+    return render_template('dashboard.html', upvote=upvote, questions=questions, ansname=ansname)
 
 
 @app.route('/setsession/<name>')
