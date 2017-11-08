@@ -131,7 +131,7 @@ def profile():
 
 # Question Form Class
 class QuestionForm(Form):
-    quesbody = TextAreaField('QuesBody', [validators.Length(min=10)])
+    quesbody = TextAreaField('QuestionBody', [validators.Length(min=10)])
 
 
 # Add Question
@@ -146,7 +146,7 @@ def add_question():
         cur = mysql.connection.cursor()
 
         # Execute
-        cur.execute("INSERT INTO Questions(Ques) VALUES(%s)", (quesbody))
+        cur.execute("INSERT INTO Questions(ProID,Ques) VALUES(%s, %s)", (session['pro_id'], quesbody))
 
         # Commit to DB
         mysql.connection.commit()
