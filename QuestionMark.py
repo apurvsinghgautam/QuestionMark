@@ -23,15 +23,15 @@ def index(aid=None):
     cur = mysql.connection.cursor()
     cur.execute("SELECT Ques FROM questions")
     questions = cur.fetchall()
-    cur.execute("SELECT Uname FROM answers,userprofile WHERE answers.ProID=userprofile.ProID;")
-    names = cur.fetchall()
-    cur.execute("SELECT Ans FROM answers,userprofile WHERE answers.ProID=userprofile.ProID;")
-    answers = cur.fetchall()
-    cur.execute("SELECT COUNT(*) FROM upvotes WHERE AID=%s",aid)
+    cur.execute("SELECT Uname,Ans FROM answers,userprofile WHERE answers.ProID=userprofile.ProID")
+    ansname = cur.fetchall()
+   # cur.execute("SELECT Ans FROM answers,userprofile WHERE answers.ProID=userprofile.ProID")
+    #answers = cur.fetchall()
+    cur.execute("SELECT COUNT(*) as cnt FROM upvotes WHERE AID=%s",[aid])
     upvote = cur.fetchall()
     #cur.execute("INSERT INTO (AID) VALUES %s", aid)
-
-    return render_template('index.html',upvote=str(upvote),questions=questions,names=names,answers=answers)
+    print (upvote)
+    return render_template('index.html',upvote=str(upvote),questions=questions,ansname=ansname)
 
 
 @app.route('/profile')
@@ -39,8 +39,12 @@ def profile():
     cur = mysql.connection.cursor()
     cur.execute("SELECT Uname FROM userprofile WHERE Email=%s",[session['email']])
     name = cur.fetchone()
+    email = session['email']
+    newName = name['Uname']
+    print (newName)
+    print (email)
 
-    return render_template('profile.html',name=name)
+    return render_template('profile.html',name=newName)
 
 
 # Register Form Class
