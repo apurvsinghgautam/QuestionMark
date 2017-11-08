@@ -1,24 +1,5 @@
 {% extends 'layout.html' %}
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Question Mark</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="{{ url_for('static', filename='bootstrap.css') }}" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-        <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
-
-    <link href="{{ url_for('static', filename='font-awesome.css') }}" rel="stylesheet">
-  </head>
-
-  <body>
-
-
-
+{% block body %}
 
     <section>
       <div class="container">
@@ -32,7 +13,8 @@
                 </div>
                 <div class="col-md-8">
                   <ul>
-                    <li><strong>Name:</strong>{{ name }}</li>
+
+                    <li><strong>Name:</strong>{{ names['Uname'] }}</li>
                     <li><strong>Email:</strong>{{ session['email'] }}</li>
                   </ul>
                 </div>
@@ -69,6 +51,4 @@
     </section>
 
 
-
-  </body>
-</html>
+{% endblock %}
